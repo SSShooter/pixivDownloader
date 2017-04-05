@@ -1,44 +1,32 @@
 from urllib import request
 import requests
 import re
+
 id = input("Enter id:")
 url = 'http://120.76.217.199:3000/getpic/'+id
 r = requests.get(url)
-print(r.status_code)
-
 res_dic = r.json()
-
 url = res_dic['data']
-p = re.compile(r'^.+/img(.+)_p0.+$')
-test = p.findall(url)
-dateid = test[0]
-pic_req_url1 = 'https://i.pximg.net/img-original/img' + dateid + '_p0.png'
-pic_req_url2 = 'https://i.pximg.net/img-original/img' + dateid + '_p0.jpg'
+p_dateid = re.compile(r'^.+/img(.+)_p0.+$')
+dateid = p_dateid.findall(url)[0]
 referer = 'http://www.pixiv.net/member_illust.php?mode=medium&illust_id='+id
-print(pic_req_url1)
-print(referer)
 
-
-try:
-    req = request.Request(pic_req_url1)
+def getPic(format, page):
+    req = request.Request('https://i.pximg.net/img-original/img' + dateid + '_p'+ str(page) +'.'+format)
     req.add_header('referer', referer)
     f = request.urlopen(req)
-    print('Status:', f.status, f.reason)
     pic = f.read()
-    with open(id + '.jpg', 'wb') as file_object:
-        file_object.write(pic)
+    file_object = open(id + '_p' + str(page) + '.' + format, 'wb')
+    file_object.write(pic)
+    file_object.close()
+    print('p',page,'downloaded')
+
+try:
+    for num1 in range(200):
+        getPic('jpg',num1)
 except Exception as e:
-    print('Error:', e)
     try:
-        req = request.Request(pic_req_url2)
-        req.add_header('referer', referer)
-        f = request.urlopen(req)
-        print('Status:', f.status, f.reason)
-        pic = f.read()
-        with open(id + '.jpg', 'wb') as file_object:
-            file_object.write(pic)
+        for num2 in range(200):
+            getPic('png',num2)
     except Exception as e:
-        print('Error:', e)
-        print('get pic fail')
-
-
+        print('finish')
