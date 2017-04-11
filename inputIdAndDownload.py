@@ -1,16 +1,19 @@
 from urllib import request
 import requests
 import re
+import imageio
+from zipfile import *
 
 def getGif():
     req = request.Request('https://i2.pixiv.net/img-zip-ugoira/img'+ dateid +'_ugoira600x600.zip')
     req.add_header('referer', referer)
     req.add_header('Origin', 'http://www.pixiv.net')
     f = request.urlopen(req)
-    pic = f.read()
-    file_object = open(id + '.zip', 'wb')
-    file_object.write(pic)
+    gif = f.read()
+    file_object = open('temp/'+ id + '.zip', 'wb')
+    file_object.write(gif)
     file_object.close()
+
     print('gif downloaded')
 
 def getPic(format, page):
