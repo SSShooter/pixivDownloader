@@ -1,8 +1,16 @@
 from urllib import request
 import requests
 import re
+from PIL import Image
 import imageio
 from zipfile import *
+import os
+import shutil
+
+images = []
+if(os.path.exists('temp')):
+    shutil.rmtree('temp')
+os.mkdir('temp')
 
 def getGif():
     req = request.Request('https://i2.pixiv.net/img-zip-ugoira/img'+ dateid +'_ugoira600x600.zip')
@@ -12,8 +20,11 @@ def getGif():
     gif = f.read()
     file_object = open('temp/'+ id + '.zip', 'wb')
     file_object.write(gif)
-    file_object.close()
-
+    thisZip = ZipFile('temp/'+ id + '.zip')
+    list = thisZip.namelist()
+    for frame in list:
+        images.append(imageio.imread(thisZip.read(frame)))
+    imageio.mimsave(id + '.gif', images ,duration=0.1)
     print('gif downloaded')
 
 def getPic(format, page):
