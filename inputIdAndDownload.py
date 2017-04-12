@@ -1,6 +1,5 @@
 from urllib import request
 import re
-from PIL import Image
 import imageio
 from zipfile import *
 import os
@@ -11,6 +10,8 @@ from tqdm import tqdm
 if(os.path.exists('temp')):
     shutil.rmtree('temp')
 os.mkdir('temp')
+if(os.path.exists('download') == False):
+    os.mkdir('download')
 
 def getGif():
     images = []
@@ -35,7 +36,7 @@ def getGif():
     list = thisZip.namelist()
     for frame in list:
         images.append(imageio.imread(thisZip.read(frame)))
-    imageio.mimsave(id + '.gif', images ,duration=0.1)
+    imageio.mimsave('download/'+ id + '.gif', images ,duration=0.1)
     print('gif generated')
 
 def getPic(format, page):
@@ -43,7 +44,7 @@ def getPic(format, page):
     req.add_header('referer', referer)
     f = request.urlopen(req)
     pic = f.read()
-    file_object = open(id + '_p' + str(page) + '.' + format, 'wb')
+    file_object = open('download/'+ id + '_p' + str(page) + '.' + format, 'wb')
     file_object.write(pic)
     file_object.close()
     print('p',page,'downloaded')
@@ -53,7 +54,11 @@ while(1):
     url = 'http://120.76.217.199:3000/getpic/'+id
     r = requests.get(url)
     res_dic = r.json()
-    url = res_dic['data']['src']
+    try:
+        url = res_dic['data']['src']
+    except Exception:
+        print('Wrong id,please input again.\n')
+        continue
     # 是gif还是pic
     itype = res_dic['itype']
     if (itype=='pic'): 
