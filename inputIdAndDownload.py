@@ -52,7 +52,11 @@ def getPic(format, page):
 while(1):
     id = input("Enter id:")
     url = 'http://120.76.217.199:3000/getpic/'+id
-    r = requests.get(url)
+    try:
+        r = requests.get(url)
+    except:
+        print('Connection fail\n')
+        continue
     res_dic = r.json()
     try:
         url = res_dic['data']['src']
