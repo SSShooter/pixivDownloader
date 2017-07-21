@@ -2,7 +2,7 @@
 ## 简述   
 todo 移植到nodejs   
 编写环境：python3.6              
-下载器配合[pixivAPI](https://github.com/ssshooter/pixivAPI)使用,           
+下载器配合[pixivAPI](/pixivAPI/README.md)使用,           
 使用前请安装依赖       
 requests, imageio, tqdm        
 ## 使用             
